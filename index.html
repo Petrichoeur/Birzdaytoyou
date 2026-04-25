@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Joyeux Anniversaire — Angélique</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=UnifrakturMaguntia&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Cinzel+Decorative:wght@400;700;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- Custom cursor -->
+  <div class="cursor" id="cursor"></div>
+  <div class="cursor-trail" id="cursorTrail"></div>
+
+  <!-- Particle canvas -->
+  <canvas id="particleCanvas"></canvas>
+
+  <!-- ===== HERO SECTION ===== -->
+  <section class="hero" id="hero">
+    <div class="hero-bg-layers">
+      <div class="bg-layer bg-layer-1"></div>
+      <div class="bg-layer bg-layer-2"></div>
+      <div class="bg-layer bg-layer-3"></div>
+    </div>
+
+    <!-- Candles -->
+    <div class="candles-row">
+      <div class="candle"><div class="flame"></div><div class="wick"></div></div>
+      <div class="candle"><div class="flame"></div><div class="wick"></div></div>
+      <div class="candle c-tall"><div class="flame"></div><div class="wick"></div></div>
+      <div class="candle"><div class="flame"></div><div class="wick"></div></div>
+      <div class="candle"><div class="flame"></div><div class="wick"></div></div>
+    </div>
+
+    <div class="hero-content">
+      <div class="ornament-top">
+        <span class="ornament-line"></span>
+        <span class="ornament-symbol">✦ ✦ ✦</span>
+        <span class="ornament-line"></span>
+      </div>
+
+      <p class="hero-sub reveal">En ce jour maudit de ta naissance</p>
+      <h1 class="hero-title reveal">
+        <span class="title-line">Joyeux</span>
+        <span class="title-name">Angélique</span>
+        <span class="title-line">Anniversaire</span>
+      </h1>
+
+      <div class="rose-divider reveal">
+        <svg viewBox="0 0 300 30" xmlns="http://www.w3.org/2000/svg">
+          <line x1="0" y1="15" x2="120" y2="15" stroke="#8b0000" stroke-width="1"/>
+          <text x="150" y="20" text-anchor="middle" fill="#8b0000" font-size="18">✿</text>
+          <line x1="180" y1="15" x2="300" y2="15" stroke="#8b0000" stroke-width="1"/>
+        </svg>
+      </div>
+
+      <p class="hero-quote reveal">
+        <em>"Les ténèbres te saluent, reine de l'obscurité"</em>
+      </p>
+
+      <a href="#messages" class="scroll-cta reveal">
+        <span>Voir les messages</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M12 5v14M5 12l7 7 7-7"/>
+        </svg>
+      </a>
+    </div>
+
+    <!-- Bats decoration -->
+    <div class="bats-container" aria-hidden="true">
+      <div class="bat bat-1">🦇</div>
+      <div class="bat bat-2">🦇</div>
+      <div class="bat bat-3">🦇</div>
+      <div class="bat bat-4">🦇</div>
+    </div>
+  </section>
+
+  <!-- ===== DIVIDER ===== -->
+  <div class="section-divider">
+    <svg viewBox="0 0 1200 60" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M0,30 Q150,0 300,30 Q450,60 600,30 Q750,0 900,30 Q1050,60 1200,30 L1200,60 L0,60 Z" fill="#0a0007"/>
+    </svg>
+  </div>
+
+  <!-- ===== MESSAGES VIDEO SECTION ===== -->
+  <section class="messages-section" id="messages">
+    <div class="section-header">
+      <div class="ornament-top">
+        <span class="ornament-line"></span>
+        <span class="ornament-symbol">⸸ ⸸ ⸸</span>
+        <span class="ornament-line"></span>
+      </div>
+      <h2 class="section-title">Messages des Âmes</h2>
+      <p class="section-subtitle">Ceux qui t'aiment ont traversé les ténèbres pour te parler</p>
+    </div>
+
+    <div class="videos-grid" id="videosGrid">
+      <!-- Les cartes vidéo sont injectées par JS -->
+    </div>
+  </section>
+
+  <!-- ===== VIDEO LIGHTBOX ===== -->
+  <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Lecture vidéo">
+    <div class="lightbox-overlay" id="lightboxOverlay"></div>
+    <div class="lightbox-container">
+      <button class="lightbox-close" id="lightboxClose" aria-label="Fermer">✕</button>
+      <div class="lightbox-title" id="lightboxTitle"></div>
+      <video id="lightboxVideo" controls playsinline>
+        Votre navigateur ne supporte pas la vidéo HTML5.
+      </video>
+    </div>
+  </div>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="site-footer">
+    <div class="footer-ornament">
+      <svg viewBox="0 0 400 80" xmlns="http://www.w3.org/2000/svg">
+        <line x1="0" y1="40" x2="160" y2="40" stroke="#8b0000" stroke-width="0.5"/>
+        <text x="200" y="46" text-anchor="middle" fill="#8b0000" font-size="24" font-family="Georgia">✦</text>
+        <line x1="240" y1="40" x2="400" y2="40" stroke="#8b0000" stroke-width="0.5"/>
+      </svg>
+    </div>
+    <p class="footer-text">
+      Avec tout notre amour ténébreux &nbsp;·&nbsp; <em>Angélique</em>
+    </p>
+    <p class="footer-year">MMXXV</p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
