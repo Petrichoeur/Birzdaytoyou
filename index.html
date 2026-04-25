@@ -4,18 +4,30 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Joyeux Anniversaire — Angélique</title>
+  <meta name="description" content="Un hommage ténébreux et élégant pour l'anniversaire d'Angélique." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=UnifrakturMaguntia&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Cinzel+Decorative:wght@400;700;900&display=swap" rel="stylesheet" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=UnifrakturMaguntia&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Cinzel+Decorative:wght@400;700;900&family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
-  <!-- Custom cursor -->
-  <div class="cursor" id="cursor"></div>
-  <div class="cursor-trail" id="cursorTrail"></div>
+  <!-- Fog overlay -->
+  <div class="fog-container" aria-hidden="true">
+    <div class="fog fog-1"></div>
+    <div class="fog fog-2"></div>
+    <div class="fog fog-3"></div>
+  </div>
 
   <!-- Particle canvas -->
-  <canvas id="particleCanvas"></canvas>
+  <canvas id="particleCanvas" aria-hidden="true"></canvas>
+
+  <!-- Blood drip SVG overlay -->
+  <div class="blood-drip-top" aria-hidden="true">
+    <svg viewBox="0 0 1200 80" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M0,0 L0,20 Q20,20 20,40 Q20,55 15,55 Q10,55 10,40 Q10,25 30,20 L50,20 Q50,20 50,50 Q50,70 45,70 Q40,70 40,50 Q40,25 60,20 L120,20 Q120,20 120,35 Q120,45 116,45 Q112,45 112,35 Q112,22 130,20 L200,20 Q200,20 200,55 Q200,75 195,75 Q190,75 190,55 Q190,25 210,20 L300,20 Q300,20 300,30 Q300,38 297,38 Q294,38 294,30 Q294,22 310,20 L400,20 Q400,20 400,45 Q400,60 396,60 Q392,60 392,45 Q392,24 410,20 L500,20 Q500,20 500,35 Q500,48 496,48 Q492,48 492,35 Q492,22 510,20 L600,20 Q600,20 600,60 Q600,78 595,78 Q590,78 590,60 Q590,24 610,20 L700,20 Q700,20 700,30 Q700,40 696,40 Q692,40 692,30 Q692,22 710,20 L800,20 Q800,20 800,50 Q800,65 795,65 Q790,65 790,50 Q790,24 810,20 L900,20 Q900,20 900,38 Q900,50 896,50 Q892,50 892,38 Q892,23 910,20 L1000,20 Q1000,20 1000,45 Q1000,58 996,58 Q992,58 992,45 Q992,24 1010,20 L1100,20 Q1100,20 1100,30 Q1100,42 1096,42 Q1092,42 1092,30 Q1092,22 1120,20 L1200,20 L1200,0 Z" fill="#0a0007"/>
+    </svg>
+  </div>
 
   <!-- ===== HERO SECTION ===== -->
   <section class="hero" id="hero">
@@ -25,46 +37,295 @@
       <div class="bg-layer bg-layer-3"></div>
     </div>
 
-    <!-- Candles -->
-    <div class="candles-row">
-      <div class="candle"><div class="flame"></div><div class="wick"></div></div>
-      <div class="candle"><div class="flame"></div><div class="wick"></div></div>
-      <div class="candle c-tall"><div class="flame"></div><div class="wick"></div></div>
-      <div class="candle"><div class="flame"></div><div class="wick"></div></div>
-      <div class="candle"><div class="flame"></div><div class="wick"></div></div>
+    <!-- Gothic Cathedral Frame -->
+    <div class="cathedral-frame" aria-hidden="true">
+      <!-- Left gothic arch -->
+      <div class="gothic-arch arch-left">
+        <svg viewBox="0 0 120 500" xmlns="http://www.w3.org/2000/svg">
+          <path d="M120,500 L120,120 Q120,0 60,0 Q0,0 0,120 L0,500" fill="none" stroke="rgba(139,0,0,0.12)" stroke-width="1.5"/>
+          <path d="M110,500 L110,125 Q110,15 60,15 Q10,15 10,125 L10,500" fill="none" stroke="rgba(201,168,76,0.06)" stroke-width="0.5"/>
+          <!-- Inner tracery -->
+          <path d="M60,15 L60,200" stroke="rgba(139,0,0,0.08)" stroke-width="0.5"/>
+          <path d="M10,125 Q60,80 110,125" fill="none" stroke="rgba(139,0,0,0.06)" stroke-width="0.5"/>
+          <circle cx="60" cy="70" r="20" fill="none" stroke="rgba(201,168,76,0.05)" stroke-width="0.5"/>
+        </svg>
+      </div>
+      <!-- Right gothic arch -->
+      <div class="gothic-arch arch-right">
+        <svg viewBox="0 0 120 500" xmlns="http://www.w3.org/2000/svg">
+          <path d="M0,500 L0,120 Q0,0 60,0 Q120,0 120,120 L120,500" fill="none" stroke="rgba(139,0,0,0.12)" stroke-width="1.5"/>
+          <path d="M10,500 L10,125 Q10,15 60,15 Q110,15 110,125 L110,500" fill="none" stroke="rgba(201,168,76,0.06)" stroke-width="0.5"/>
+          <path d="M60,15 L60,200" stroke="rgba(139,0,0,0.08)" stroke-width="0.5"/>
+          <path d="M10,125 Q60,80 110,125" fill="none" stroke="rgba(139,0,0,0.06)" stroke-width="0.5"/>
+          <circle cx="60" cy="70" r="20" fill="none" stroke="rgba(201,168,76,0.05)" stroke-width="0.5"/>
+        </svg>
+      </div>
     </div>
 
+    <!-- Stained Glass Rose Window -->
+    <div class="rose-window" aria-hidden="true">
+      <svg viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg" class="rose-window-svg">
+        <defs>
+          <radialGradient id="rwGlow" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="#ff0040" stop-opacity="0.15"/>
+            <stop offset="40%" stop-color="#8b0000" stop-opacity="0.08"/>
+            <stop offset="100%" stop-color="transparent" stop-opacity="0"/>
+          </radialGradient>
+          <filter id="roseBlur">
+            <feGaussianBlur stdDeviation="2"/>
+          </filter>
+        </defs>
+        <circle cx="150" cy="150" r="140" fill="url(#rwGlow)" filter="url(#roseBlur)"/>
+        <circle cx="150" cy="150" r="130" fill="none" stroke="rgba(139,0,0,0.15)" stroke-width="1"/>
+        <circle cx="150" cy="150" r="90" fill="none" stroke="rgba(139,0,0,0.1)" stroke-width="0.5"/>
+        <circle cx="150" cy="150" r="50" fill="none" stroke="rgba(201,168,76,0.08)" stroke-width="0.5"/>
+        <circle cx="150" cy="150" r="20" fill="none" stroke="rgba(201,168,76,0.12)" stroke-width="0.8"/>
+        <!-- Radial spokes -->
+        <g stroke="rgba(139,0,0,0.07)" stroke-width="0.5">
+          <line x1="150" y1="20" x2="150" y2="280"/>
+          <line x1="20" y1="150" x2="280" y2="150"/>
+          <line x1="57" y1="57" x2="243" y2="243"/>
+          <line x1="243" y1="57" x2="57" y2="243"/>
+          <line x1="150" y1="20" x2="243" y2="57" opacity="0.5"/>
+          <line x1="243" y1="57" x2="280" y2="150" opacity="0.5"/>
+          <line x1="280" y1="150" x2="243" y2="243" opacity="0.5"/>
+          <line x1="243" y1="243" x2="150" y2="280" opacity="0.5"/>
+          <line x1="150" y1="280" x2="57" y2="243" opacity="0.5"/>
+          <line x1="57" y1="243" x2="20" y2="150" opacity="0.5"/>
+          <line x1="20" y1="150" x2="57" y2="57" opacity="0.5"/>
+          <line x1="57" y1="57" x2="150" y2="20" opacity="0.5"/>
+        </g>
+        <!-- Petal shapes in the rose window -->
+        <g fill="none" stroke="rgba(139,0,0,0.08)" stroke-width="0.5">
+          <ellipse cx="150" cy="80" rx="12" ry="25" transform="rotate(0,150,150)"/>
+          <ellipse cx="150" cy="80" rx="12" ry="25" transform="rotate(45,150,150)"/>
+          <ellipse cx="150" cy="80" rx="12" ry="25" transform="rotate(90,150,150)"/>
+          <ellipse cx="150" cy="80" rx="12" ry="25" transform="rotate(135,150,150)"/>
+          <ellipse cx="150" cy="80" rx="12" ry="25" transform="rotate(180,150,150)"/>
+          <ellipse cx="150" cy="80" rx="12" ry="25" transform="rotate(225,150,150)"/>
+          <ellipse cx="150" cy="80" rx="12" ry="25" transform="rotate(270,150,150)"/>
+          <ellipse cx="150" cy="80" rx="12" ry="25" transform="rotate(315,150,150)"/>
+        </g>
+      </svg>
+    </div>
+
+    <!-- Cathedral Candelabras -->
+    <div class="candelabra-scene" aria-hidden="true">
+      <!-- Left candelabra group -->
+      <div class="candelabra candelabra-left">
+        <div class="candelabra-arm arm-left">
+          <div class="cathedral-candle c-sm">
+            <div class="candle-smoke"></div>
+            <div class="flame-wrap"><div class="flame-core"></div><div class="flame-outer"></div></div>
+            <div class="wick"></div>
+            <div class="wax-body"></div>
+            <div class="wax-drip drip-1"></div>
+            <div class="wax-drip drip-2"></div>
+            <div class="candle-halo"></div>
+            <div class="light-pool"></div>
+          </div>
+        </div>
+        <div class="candelabra-arm arm-center">
+          <div class="cathedral-candle c-md">
+            <div class="candle-smoke"></div>
+            <div class="flame-wrap"><div class="flame-core"></div><div class="flame-outer"></div></div>
+            <div class="wick"></div>
+            <div class="wax-body"></div>
+            <div class="wax-drip drip-1"></div>
+            <div class="wax-drip drip-3"></div>
+            <div class="candle-halo"></div>
+            <div class="light-pool"></div>
+          </div>
+        </div>
+        <div class="candelabra-arm arm-right">
+          <div class="cathedral-candle c-sm">
+            <div class="candle-smoke"></div>
+            <div class="flame-wrap"><div class="flame-core"></div><div class="flame-outer"></div></div>
+            <div class="wick"></div>
+            <div class="wax-body"></div>
+            <div class="wax-drip drip-2"></div>
+            <div class="candle-halo"></div>
+            <div class="light-pool"></div>
+          </div>
+        </div>
+        <div class="candelabra-base"></div>
+        <div class="candelabra-stem"></div>
+        <div class="candelabra-foot"></div>
+      </div>
+
+      <!-- Center grand candelabra -->
+      <div class="candelabra candelabra-center">
+        <div class="candelabra-arm arm-far-left">
+          <div class="cathedral-candle c-sm">
+            <div class="candle-smoke"></div>
+            <div class="flame-wrap"><div class="flame-core"></div><div class="flame-outer"></div></div>
+            <div class="wick"></div>
+            <div class="wax-body"></div>
+            <div class="wax-drip drip-1"></div>
+            <div class="candle-halo"></div>
+            <div class="light-pool"></div>
+          </div>
+        </div>
+        <div class="candelabra-arm arm-left">
+          <div class="cathedral-candle c-md">
+            <div class="candle-smoke"></div>
+            <div class="flame-wrap"><div class="flame-core"></div><div class="flame-outer"></div></div>
+            <div class="wick"></div>
+            <div class="wax-body"></div>
+            <div class="wax-drip drip-2"></div>
+            <div class="wax-drip drip-3"></div>
+            <div class="candle-halo"></div>
+            <div class="light-pool"></div>
+          </div>
+        </div>
+        <div class="candelabra-arm arm-center">
+          <div class="cathedral-candle c-lg">
+            <div class="candle-smoke"></div>
+            <div class="flame-wrap"><div class="flame-core"></div><div class="flame-outer"></div></div>
+            <div class="wick"></div>
+            <div class="wax-body"></div>
+            <div class="wax-drip drip-1"></div>
+            <div class="wax-drip drip-2"></div>
+            <div class="wax-drip drip-3"></div>
+            <div class="candle-halo"></div>
+            <div class="light-pool"></div>
+          </div>
+        </div>
+        <div class="candelabra-arm arm-right">
+          <div class="cathedral-candle c-md">
+            <div class="candle-smoke"></div>
+            <div class="flame-wrap"><div class="flame-core"></div><div class="flame-outer"></div></div>
+            <div class="wick"></div>
+            <div class="wax-body"></div>
+            <div class="wax-drip drip-1"></div>
+            <div class="candle-halo"></div>
+            <div class="light-pool"></div>
+          </div>
+        </div>
+        <div class="candelabra-arm arm-far-right">
+          <div class="cathedral-candle c-sm">
+            <div class="candle-smoke"></div>
+            <div class="flame-wrap"><div class="flame-core"></div><div class="flame-outer"></div></div>
+            <div class="wick"></div>
+            <div class="wax-body"></div>
+            <div class="wax-drip drip-2"></div>
+            <div class="candle-halo"></div>
+            <div class="light-pool"></div>
+          </div>
+        </div>
+        <div class="candelabra-base"></div>
+        <div class="candelabra-stem stem-tall"></div>
+        <div class="candelabra-foot"></div>
+      </div>
+
+      <!-- Right candelabra group -->
+      <div class="candelabra candelabra-right">
+        <div class="candelabra-arm arm-left">
+          <div class="cathedral-candle c-sm">
+            <div class="candle-smoke"></div>
+            <div class="flame-wrap"><div class="flame-core"></div><div class="flame-outer"></div></div>
+            <div class="wick"></div>
+            <div class="wax-body"></div>
+            <div class="wax-drip drip-1"></div>
+            <div class="candle-halo"></div>
+            <div class="light-pool"></div>
+          </div>
+        </div>
+        <div class="candelabra-arm arm-center">
+          <div class="cathedral-candle c-md">
+            <div class="candle-smoke"></div>
+            <div class="flame-wrap"><div class="flame-core"></div><div class="flame-outer"></div></div>
+            <div class="wick"></div>
+            <div class="wax-body"></div>
+            <div class="wax-drip drip-2"></div>
+            <div class="wax-drip drip-3"></div>
+            <div class="candle-halo"></div>
+            <div class="light-pool"></div>
+          </div>
+        </div>
+        <div class="candelabra-arm arm-right">
+          <div class="cathedral-candle c-sm">
+            <div class="candle-smoke"></div>
+            <div class="flame-wrap"><div class="flame-core"></div><div class="flame-outer"></div></div>
+            <div class="wick"></div>
+            <div class="wax-body"></div>
+            <div class="wax-drip drip-1"></div>
+            <div class="wax-drip drip-2"></div>
+            <div class="candle-halo"></div>
+            <div class="light-pool"></div>
+          </div>
+        </div>
+        <div class="candelabra-base"></div>
+        <div class="candelabra-stem"></div>
+        <div class="candelabra-foot"></div>
+      </div>
+    </div>
+
+    <!-- Smoke canvas for dynamic candle smoke -->
+    <canvas id="smokeCanvas" aria-hidden="true"></canvas>
+
     <div class="hero-content">
-      <div class="ornament-top">
+      <!-- Gothic rose ornament -->
+      <div class="gothic-rose reveal" aria-hidden="true">
+        <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" class="rose-svg">
+          <defs>
+            <radialGradient id="roseGrad" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stop-color="#ff1a1a" stop-opacity="0.9"/>
+              <stop offset="50%" stop-color="#8b0000" stop-opacity="0.7"/>
+              <stop offset="100%" stop-color="#2d0000" stop-opacity="0"/>
+            </radialGradient>
+          </defs>
+          <g transform="translate(100,100)">
+            <!-- Rose petals -->
+            <ellipse rx="12" ry="30" fill="url(#roseGrad)" transform="rotate(0)" opacity="0.8"/>
+            <ellipse rx="12" ry="30" fill="url(#roseGrad)" transform="rotate(45)" opacity="0.75"/>
+            <ellipse rx="12" ry="30" fill="url(#roseGrad)" transform="rotate(90)" opacity="0.8"/>
+            <ellipse rx="12" ry="30" fill="url(#roseGrad)" transform="rotate(135)" opacity="0.75"/>
+            <ellipse rx="12" ry="30" fill="url(#roseGrad)" transform="rotate(180)" opacity="0.8"/>
+            <ellipse rx="12" ry="30" fill="url(#roseGrad)" transform="rotate(225)" opacity="0.75"/>
+            <ellipse rx="12" ry="30" fill="url(#roseGrad)" transform="rotate(270)" opacity="0.8"/>
+            <ellipse rx="12" ry="30" fill="url(#roseGrad)" transform="rotate(315)" opacity="0.75"/>
+            <circle r="8" fill="#4a0000"/>
+            <circle r="3" fill="#8b0000"/>
+          </g>
+        </svg>
+      </div>
+
+      <div class="ornament-top reveal">
         <span class="ornament-line"></span>
-        <span class="ornament-symbol">✦ ✦ ✦</span>
+        <span class="ornament-symbol">⛧ ⛧ ⛧</span>
         <span class="ornament-line"></span>
       </div>
 
       <p class="hero-sub reveal">En ce jour maudit de ta naissance</p>
       <h1 class="hero-title reveal">
         <span class="title-line">Joyeux</span>
-        <span class="title-name">Angélique</span>
+        <span class="title-name" data-text="Angélique">Angélique</span>
         <span class="title-line">Anniversaire</span>
       </h1>
 
-      <div class="rose-divider reveal">
-        <svg viewBox="0 0 300 30" xmlns="http://www.w3.org/2000/svg">
-          <line x1="0" y1="15" x2="120" y2="15" stroke="#8b0000" stroke-width="1"/>
-          <text x="150" y="20" text-anchor="middle" fill="#8b0000" font-size="18">✿</text>
-          <line x1="180" y1="15" x2="300" y2="15" stroke="#8b0000" stroke-width="1"/>
+      <div class="gothic-divider reveal" aria-hidden="true">
+        <svg viewBox="0 0 600 40" xmlns="http://www.w3.org/2000/svg">
+          <line x1="0" y1="20" x2="230" y2="20" stroke="#8b0000" stroke-width="0.5" opacity="0.6"/>
+          <g transform="translate(300,20)">
+            <path d="M-15,-8 Q0,-25 15,-8 Q25,0 15,8 Q0,25 -15,8 Q-25,0 -15,-8 Z" fill="none" stroke="#c9a84c" stroke-width="0.7" opacity="0.6"/>
+            <circle r="3" fill="#8b0000" opacity="0.8"/>
+          </g>
+          <line x1="370" y1="20" x2="600" y2="20" stroke="#8b0000" stroke-width="0.5" opacity="0.6"/>
         </svg>
       </div>
 
       <p class="hero-quote reveal">
-        <em>"Les ténèbres te saluent, reine de l'obscurité"</em>
+        <em>"Les engeances du réel te saluent"</em>
       </p>
 
-      <a href="#messages" class="scroll-cta reveal">
-        <span>Voir les messages</span>
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-          <path d="M12 5v14M5 12l7 7 7-7"/>
-        </svg>
+      <a href="#messages" class="scroll-cta reveal" id="scrollCta">
+        <span>Descendre dans les abysses</span>
+        <div class="scroll-arrow">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
+            <path d="M12 5v14M5 12l7 7 7-7"/>
+          </svg>
+        </div>
       </a>
     </div>
 
@@ -74,13 +335,16 @@
       <div class="bat bat-2">🦇</div>
       <div class="bat bat-3">🦇</div>
       <div class="bat bat-4">🦇</div>
+      <div class="bat bat-5">🦇</div>
+      <div class="bat bat-6">🦇</div>
     </div>
   </section>
 
-  <!-- ===== DIVIDER ===== -->
+  <!-- ===== TRANSITION DIVIDER ===== -->
   <div class="section-divider">
-    <svg viewBox="0 0 1200 60" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M0,30 Q150,0 300,30 Q450,60 600,30 Q750,0 900,30 Q1050,60 1200,30 L1200,60 L0,60 Z" fill="#0a0007"/>
+    <svg viewBox="0 0 1200 120" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M0,60 C200,20 400,100 600,60 C800,20 1000,100 1200,60 L1200,120 L0,120 Z" fill="#050207"/>
+      <path d="M0,80 C300,40 600,110 900,70 C1050,50 1150,90 1200,80 L1200,120 L0,120 Z" fill="#050207" opacity="0.5"/>
     </svg>
   </div>
 
@@ -92,12 +356,17 @@
         <span class="ornament-symbol">⸸ ⸸ ⸸</span>
         <span class="ornament-line"></span>
       </div>
-      <h2 class="section-title">Messages des Âmes</h2>
-      <p class="section-subtitle">Ceux qui t'aiment ont traversé les ténèbres pour te parler</p>
+      <h2 class="section-title reveal">Messages des Âmes</h2>
+      <p class="section-subtitle reveal">Ceux qui t'aiment ont traversé les ténèbres pour te parler</p>
+      <div class="title-underline reveal"></div>
     </div>
 
     <div class="videos-grid" id="videosGrid">
-      <!-- Les cartes vidéo sont injectées par JS -->
+      <!-- Video cards injected dynamically by JS -->
+      <div class="loading-indicator" id="loadingIndicator">
+        <div class="loading-pentagram"></div>
+        <p>Invocation des esprits…</p>
+      </div>
     </div>
   </section>
 
@@ -105,27 +374,41 @@
   <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Lecture vidéo">
     <div class="lightbox-overlay" id="lightboxOverlay"></div>
     <div class="lightbox-container">
-      <button class="lightbox-close" id="lightboxClose" aria-label="Fermer">✕</button>
+      <button class="lightbox-close" id="lightboxClose" aria-label="Fermer">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M18 6L6 18M6 6l12 12"/>
+        </svg>
+      </button>
       <div class="lightbox-title" id="lightboxTitle"></div>
-      <video id="lightboxVideo" controls playsinline>
-        Votre navigateur ne supporte pas la vidéo HTML5.
-      </video>
+      <div class="lightbox-video-wrapper">
+        <video id="lightboxVideo" controls playsinline>
+          Votre navigateur ne supporte pas la vidéo HTML5.
+        </video>
+      </div>
     </div>
   </div>
 
   <!-- ===== FOOTER ===== -->
   <footer class="site-footer">
-    <div class="footer-ornament">
-      <svg viewBox="0 0 400 80" xmlns="http://www.w3.org/2000/svg">
-        <line x1="0" y1="40" x2="160" y2="40" stroke="#8b0000" stroke-width="0.5"/>
-        <text x="200" y="46" text-anchor="middle" fill="#8b0000" font-size="24" font-family="Georgia">✦</text>
-        <line x1="240" y1="40" x2="400" y2="40" stroke="#8b0000" stroke-width="0.5"/>
+    <div class="footer-ornament" aria-hidden="true">
+      <svg viewBox="0 0 600 60" xmlns="http://www.w3.org/2000/svg">
+        <line x1="0" y1="30" x2="240" y2="30" stroke="#8b0000" stroke-width="0.5" opacity="0.4"/>
+        <g transform="translate(300,30)">
+          <path d="M-10,-6 Q0,-18 10,-6 Q16,0 10,6 Q0,18 -10,6 Q-16,0 -10,-6 Z" fill="none" stroke="#c9a84c" stroke-width="0.5" opacity="0.5"/>
+          <circle r="2" fill="#8b0000" opacity="0.6"/>
+        </g>
+        <line x1="360" y1="30" x2="600" y2="30" stroke="#8b0000" stroke-width="0.5" opacity="0.4"/>
       </svg>
     </div>
     <p class="footer-text">
       Avec tout notre amour ténébreux &nbsp;·&nbsp; <em>Angélique</em>
     </p>
-    <p class="footer-year">MMXXV</p>
+    <p class="footer-year">MMXXVI</p>
+    <div class="footer-chains" aria-hidden="true">
+      <span class="chain">⛓</span>
+      <span class="chain">⛓</span>
+      <span class="chain">⛓</span>
+    </div>
   </footer>
 
   <script src="script.js"></script>
