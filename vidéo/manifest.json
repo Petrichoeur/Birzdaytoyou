@@ -6,6 +6,9 @@
     { "filename": "video_4.mp4", "label": "Âme 04" },
     { "filename": "video_5.mp4", "label": "Âme 05" },
     { "filename": "video_6.mp4", "label": "Âme 06" },
-    { "filename": "video_7.mp4", "label": "Âme 07" }
+    { "filename": "video_7.mp4", "label": "Âme 07" }, 
+        { "filename": "video_8.mp4", "label": "Âme 08" }
+    ,     { "filename": "video_9.mp4", "label": "Âme 09" }
+
   ]
 }
