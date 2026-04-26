@@ -73,7 +73,43 @@ body {
 }
 
 /* ============================================================
-   FOG SYSTEM — Atmospheric overlay
+   VIGNETTE — Cathedral stone wall frame
+   ============================================================ */
+.vignette-overlay {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 99;
+  background: radial-gradient(ellipse 85% 75% at 50% 50%,
+    transparent 0%,
+    transparent 40%,
+    rgba(2,0,4,0.3) 70%,
+    rgba(2,0,4,0.7) 100%
+  );
+  animation: vignetteBreath 12s ease-in-out infinite;
+}
+
+@keyframes vignetteBreath {
+  0%, 100% { opacity: 0.85; }
+  50%      { opacity: 1; }
+}
+
+/* ============================================================
+   STONE/PARCHMENT TEXTURE — Aged cathedral material
+   ============================================================ */
+.texture-overlay {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 98;
+  opacity: 0.035;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'/%3E%3Cfilter id='s'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.5 0 0 0 0 0.35 0 0 0 0 0.25 0 0 0 0.15 0'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23s)' opacity='1'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  mix-blend-mode: overlay;
+}
+
+/* ============================================================
+   ENHANCED MULTI-LAYER FOG — Near/Mid/Far parallax
    ============================================================ */
 .fog-container {
   position: fixed;
@@ -81,15 +117,31 @@ body {
   pointer-events: none;
   z-index: 100;
   overflow: hidden;
-  opacity: 0.4;
+  opacity: 0.5;
 }
 
 .fog {
   position: absolute;
-  width: 200%;
+  width: 250%;
   height: 100%;
   background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='800' height='400'%3E%3Cfilter id='f'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.008' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.05 0 0 0 0 0 0 0 0 0 0.04 0 0 0 0.5 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23f)'/%3E%3C/svg%3E");
-  opacity: 0.6;
+  opacity: 0.7;
+}
+
+/* Fog layer types for depth */
+.fog-near {
+  filter: blur(2px) brightness(0.4);
+  animation: fogDriftNear 28s linear infinite;
+}
+
+.fog-mid {
+  filter: blur(6px) brightness(0.25);
+  animation: fogDriftMid 45s linear infinite reverse;
+}
+
+.fog-far {
+  filter: blur(12px) brightness(0.15);
+  animation: fogDriftFar 65s linear infinite;
 }
 
 .fog-1 {
@@ -111,6 +163,21 @@ body {
 @keyframes fogDrift {
   0%   { transform: translateX(0); }
   100% { transform: translateX(-50%); }
+}
+
+@keyframes fogDriftNear {
+  0%   { transform: translateX(0) translateY(0); }
+  100% { transform: translateX(-40%) translateY(-5%); }
+}
+
+@keyframes fogDriftMid {
+  0%   { transform: translateX(0) translateY(0); }
+  100% { transform: translateX(-50%) translateY(3%); }
+}
+
+@keyframes fogDriftFar {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-60%); }
 }
 
 /* ============================================================
@@ -199,8 +266,81 @@ body {
 }
 
 /* ============================================================
-   CATHEDRAL FRAME — Gothic Arches
+   WHISPER / INTROIT TEXT — Poetic scroll reveals
    ============================================================ */
+.whisper-text {
+  position: fixed;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: var(--font-serif);
+  font-size: 0.85rem;
+  font-style: italic;
+  color: var(--gold);
+  opacity: 0;
+  pointer-events: none;
+  z-index: 50;
+  text-align: center;
+  white-space: nowrap;
+  letter-spacing: 0.15em;
+  animation: whisperFadeInOut 10s ease-in-out infinite;
+  text-shadow: 0 0 20px rgba(201,168,76,0.3), 0 0 40px rgba(201,168,76,0.1);
+}
+
+@keyframes whisperFadeInOut {
+  0%, 100% { opacity: 0; transform: translateX(-50%) translateY(0); }
+  15%      { opacity: 0; }
+  20%      { opacity: 0.6; transform: translateX(-50%) translateY(-5px); }
+  35%      { opacity: 0.4; transform: translateX(-50%) translateY(-15px); }
+  50%      { opacity: 0; }
+}
+
+/* Floating orbs for additional atmosphere */
+.floating-orbs {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 3;
+  overflow: hidden;
+}
+
+.orb {
+  position: absolute;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(201,168,76,0.06) 0%, transparent 70%);
+  animation: orbFloat linear infinite;
+  opacity: 0;
+}
+
+@keyframes orbFloat {
+  0%   { opacity: 0; transform: translateY(100vh) scale(0.5); }
+  10%  { opacity: 0.4; }
+  90%  { opacity: 0.3; }
+  100% { opacity: 0; transform: translateY(-20vh) scale(1.2); }
+}
+
+/* Enhanced hero title with gothic glow line */
+.gothic-glow-line {
+  position: relative;
+  display: inline-block;
+}
+
+.gothic-glow-line::after {
+  content: '';
+  position: absolute;
+  bottom: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60%;
+  height: 1px;
+  background: linear-gradient(to right, transparent, var(--crimson), transparent);
+  box-shadow: 0 0 8px var(--crimson), 0 0 20px rgba(139,0,0,0.3);
+  animation: glowLinePulse 3s ease-in-out infinite;
+}
+
+@keyframes glowLinePulse {
+  0%, 100% { opacity: 0.4; width: 60%; }
+  50%      { opacity: 0.9; width: 80%; }
+}
 .cathedral-frame {
   position: absolute;
   inset: 0;
@@ -232,30 +372,141 @@ body {
 }
 
 /* ============================================================
-   ROSE WINDOW — Stained glass at the top
+   CATHEDRAL CEILING ARCHES
+   ============================================================ */
+.cathedral-ceiling {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 180px;
+  pointer-events: none;
+  z-index: 2;
+  opacity: 0.7;
+}
+
+.cathedral-ceiling svg {
+  width: 100%;
+  height: 100%;
+}
+
+/* ============================================================
+   FLYING BUTTRESSES
+   ============================================================ */
+.buttresses {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  overflow: hidden;
+}
+
+.buttress-left {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 200px;
+  height: 100%;
+  opacity: 0.5;
+  animation: buttressFade 4s ease-out both;
+}
+
+.buttress-right {
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 200px;
+  height: 100%;
+  opacity: 0.5;
+  animation: buttressFade 4s ease-out both;
+  animation-delay: 0.5s;
+}
+
+@keyframes buttressFade {
+  from { opacity: 0; }
+  to   { opacity: 0.5; }
+}
+
+/* ============================================================
+   ENHANCED ROSE WINDOW WITH DIVINE RAYS
    ============================================================ */
 .rose-window {
   position: absolute;
   top: -30px;
   left: 50%;
   transform: translateX(-50%);
-  width: 280px;
-  height: 280px;
+  width: 320px;
+  height: 320px;
   z-index: 1;
   pointer-events: none;
-  animation: roseWindowGlow 6s ease-in-out infinite alternate;
+  animation: roseWindowGlow 5s ease-in-out infinite alternate;
+}
+
+.rose-window-rays {
+  position: absolute;
+  inset: -50%;
+  width: 200%;
+  height: 200%;
+  left: -50%;
+  top: -50%;
+  pointer-events: none;
+}
+
+.ray {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 4px;
+  height: 50%;
+  transform-origin: top center;
+  opacity: 0;
+  animation: rayPulse 8s ease-in-out infinite;
+}
+
+.ray::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 2px;
+  height: 100%;
+  background: linear-gradient(to bottom,
+    rgba(139,0,0,0.4) 0%,
+    rgba(201,168,76,0.2) 30%,
+    transparent 100%
+  );
+  filter: blur(1px);
+}
+
+.ray-1 { transform: rotate(0deg);    animation-delay: 0s;    }
+.ray-2 { transform: rotate(45deg);   animation-delay: 1s;    }
+.ray-3 { transform: rotate(90deg);   animation-delay: 2s;    }
+.ray-4 { transform: rotate(135deg);  animation-delay: 3s;    }
+.ray-5 { transform: rotate(180deg);  animation-delay: 4s;    }
+.ray-6 { transform: rotate(225deg); animation-delay: 5s;    }
+.ray-7 { transform: rotate(270deg); animation-delay: 6s;    }
+.ray-8 { transform: rotate(315deg); animation-delay: 7s;    }
+
+@keyframes rayPulse {
+  0%, 100% { opacity: 0; }
+  10%      { opacity: 0.6; }
+  30%      { opacity: 0.3; }
+  50%      { opacity: 0.8; }
+  70%      { opacity: 0.2; }
+  90%      { opacity: 0.5; }
 }
 
 .rose-window-svg {
   width: 100%;
   height: 100%;
-  animation: roseSpin 120s linear infinite;
+  animation: roseSpin 150s linear infinite;
 }
 
 @keyframes roseWindowGlow {
-  0%   { opacity: 0.4; filter: drop-shadow(0 0 10px rgba(139,0,0,0.1)); }
-  50%  { opacity: 0.7; filter: drop-shadow(0 0 30px rgba(139,0,0,0.3)); }
-  100% { opacity: 0.5; filter: drop-shadow(0 0 15px rgba(139,0,0,0.15)); }
+  0%   { opacity: 0.5; filter: drop-shadow(0 0 15px rgba(139,0,0,0.2)); }
+  50%  { opacity: 0.85; filter: drop-shadow(0 0 40px rgba(139,0,0,0.4)); }
+  100% { opacity: 0.65; filter: drop-shadow(0 0 25px rgba(139,0,0,0.25)); }
 }
 
 /* ============================================================
@@ -823,35 +1074,56 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.2rem;
-  margin-bottom: 2.5rem;
+  gap: 1.2rem;
+  margin-top: 1rem;
+  margin-bottom: 4rem;
 }
 
 .title-line {
   font-family: var(--font-caps);
-  font-size: clamp(1.2rem, 3.5vw, 2rem);
-  color: var(--bone);
-  letter-spacing: 0.35em;
+  font-size: clamp(1rem, 2.5vw, 1.5rem);
+  color: #c9a84c; /* aged gold */
+  letter-spacing: 0.8em; /* Cinematic tracking */
+  margin-left: 0.8em; /* offset centering for tracking */
   text-transform: uppercase;
-  font-weight: 400;
-  opacity: 0.85;
+  font-weight: 300;
+  opacity: 0.9;
+  text-shadow: 
+    0 4px 20px rgba(139,0,0,0.6),
+    0 0 40px rgba(0,0,0,0.9);
+  position: relative;
 }
+
+/* Add Coppola-style horizontal bleed lines to Joyeux Anniversaire */
+.title-line::before, .title-line::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  width: 40px;
+  height: 1px;
+  background: linear-gradient(to right, transparent, var(--crimson), transparent);
+  box-shadow: 0 0 8px var(--crimson);
+}
+
+.title-line::before { right: 100%; margin-right: 20px; }
+.title-line::after { left: 100%; margin-left: -5px; }
 
 .title-name {
   font-family: var(--font-blackletter);
-  font-size: clamp(4rem, 14vw, 11rem);
+  font-size: clamp(4.5rem, 15vw, 12rem);
   color: transparent;
-  line-height: 1;
+  line-height: 0.85;
   position: relative;
-  background: linear-gradient(180deg, #ff2020 0%, #8b0000 40%, #4a0010 100%);
+  /* Deep velvet / coagulated blood gradient */
+  background: linear-gradient(180deg, #ff2a2a 0%, #a60000 35%, #460005 75%, #150000 100%);
   -webkit-background-clip: text;
   background-clip: text;
-  animation: nameGlow 4s ease-in-out infinite alternate;
   display: block;
-  filter: drop-shadow(0 0 30px rgba(139,0,0,0.5));
+  filter: drop-shadow(0 15px 15px rgba(0,0,0,0.9)) drop-shadow(0 -5px 30px rgba(139,0,0,0.4));
+  animation: nameGlow 4s ease-in-out infinite alternate;
 }
 
-/* Text glow pseudo-element for richer effect */
+/* Coppola bleeding / glowing replica overlay */
 .title-name::after {
   content: attr(data-text);
   position: absolute;
@@ -860,22 +1132,41 @@ body {
   font-size: inherit;
   line-height: inherit;
   color: transparent;
-  background: linear-gradient(180deg, #ff4040 0%, #b40000 50%, #5a0000 100%);
+  background: linear-gradient(180deg, transparent 40%, #900000 80%, #ff0000 100%);
   -webkit-background-clip: text;
   background-clip: text;
-  opacity: 0;
-  animation: nameGlowAfter 4s ease-in-out infinite alternate;
   pointer-events: none;
+  animation: draculaBleed 5s ease-in-out infinite alternate;
+  mix-blend-mode: color-dodge;
 }
 
 @keyframes nameGlow {
-  from { filter: drop-shadow(0 0 20px rgba(139,0,0,0.4)); }
-  to   { filter: drop-shadow(0 0 50px rgba(180,0,0,0.8)) drop-shadow(0 0 100px rgba(139,0,0,0.3)); }
+  from { filter: drop-shadow(0 15px 15px rgba(0,0,0,0.9)) drop-shadow(0 0 20px rgba(139,0,0,0.4)); }
+  to   { filter: drop-shadow(0 15px 15px rgba(0,0,0,0.9)) drop-shadow(0 0 60px rgba(180,0,0,0.7)); }
 }
 
-@keyframes nameGlowAfter {
-  from { opacity: 0; }
-  to   { opacity: 0.4; }
+@keyframes draculaBleed {
+  from { opacity: 0; transform: translateY(0) scale(1); filter: blur(0px); }
+  to   { opacity: 0.8; transform: translateY(3px) scale(1.01); filter: blur(2px); }
+}
+
+@keyframes textShimmer {
+  0%   { background-position: -100% 0; }
+  50%  { background-position: 200% 0; }
+  100% { background-position: -100% 0; }
+}
+
+@keyframes titleCandleFlicker {
+  0%, 100% { opacity: 1; }
+  10%      { opacity: 0.92; }
+  20%      { opacity: 1; }
+  30%      { opacity: 0.88; }
+  40%      { opacity: 0.95; }
+  50%      { opacity: 1; }
+  60%      { opacity: 0.9; }
+  70%      { opacity: 1; }
+  80%      { opacity: 0.93; }
+  90%      { opacity: 0.98; }
 }
 
 /* Gothic divider */
@@ -1253,8 +1544,59 @@ body {
   position: absolute;
   inset: 0;
   z-index: 0;
-  opacity: 0.06;
+  opacity: 0.08;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80'%3E%3Cpath d='M40 5 L65 25 L55 60 L25 60 L15 25 Z' fill='none' stroke='%238b0000' stroke-width='0.4'/%3E%3C/svg%3E");
+}
+
+/* Gothic cross pattern overlay */
+.thumb-gothic-pattern {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  opacity: 0.06;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60'%3E%3Cpath d='M30 0 L30 60 M15 15 L45 15 M20 10 L40 10 M20 50 L40 50' stroke='%238b0000' stroke-width='0.5' fill='none'/%3E%3Ccircle cx='30' cy='30' r='8' fill='none' stroke='%23c9a84c' stroke-width='0.3'/%3E%3Ccircle cx='30' cy='30' r='20' fill='none' stroke='%238b0000' stroke-width='0.3'/%3E%3C/svg%3E");
+  background-size: 60px 60px;
+}
+
+/* Enhanced title with candlelight shimmer */
+.title-name {
+  font-family: var(--font-blackletter);
+  font-size: clamp(4rem, 14vw, 11rem);
+  color: transparent;
+  line-height: 1;
+  position: relative;
+  background: linear-gradient(180deg, #ff2020 0%, #8b0000 40%, #4a0010 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  animation: nameGlow 4s ease-in-out infinite, titleCandleFlicker 3s ease-in-out infinite;
+  display: block;
+  filter: drop-shadow(0 0 30px rgba(139,0,0,0.5));
+}
+
+/* Candlelight text shimmer effect */
+.title-name::before {
+  content: attr(data-text);
+  position: absolute;
+  inset: 0;
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+  background: linear-gradient(90deg,
+    transparent 0%,
+    rgba(255,200,100,0.1) 20%,
+    rgba(255,180,80,0.15) 35%,
+    transparent 45%,
+    transparent 55%,
+    rgba(255,180,80,0.1) 70%,
+    transparent 100%
+  );
+  background-size: 200% 100%;
+  background-position: -100% 0;
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  animation: textShimmer 8s ease-in-out infinite;
+  pointer-events: none;
 }
 
 /* Video number badge */
@@ -1347,7 +1689,7 @@ body {
 }
 
 /* ============================================================
-   LIGHTBOX
+   LIGHTBOX — CATHEDRAL THEME
    ============================================================ */
 .lightbox {
   position: fixed;
@@ -1369,87 +1711,210 @@ body {
 .lightbox-overlay {
   position: absolute;
   inset: 0;
-  background: rgba(2,0,4,0.97);
-  backdrop-filter: blur(8px);
+  background: rgba(2,0,4,0.92);
+  backdrop-filter: blur(12px);
 }
 
 .lightbox-container {
   position: relative;
   z-index: 1;
   width: min(920px, 94vw);
-  transform: scale(0.85) translateY(30px);
-  transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+  background: linear-gradient(145deg, #100005, #000);
+  border: 1px solid rgba(139,0,0,0.3);
+  padding: 2.5rem 1.5rem 1.5rem;
+  box-shadow:
+    0 0 0 1px rgba(201,168,76,0.1),
+    0 40px 100px rgba(0,0,0,0.9),
+    0 0 80px rgba(139,0,0,0.2),
+    inset 0 0 50px rgba(0,0,0,0.8);
+  transform: scale(0.9) translateY(40px);
+  transition: all 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+  border-radius: 6px 6px 4px 4px;
 }
 
 .lightbox.open .lightbox-container {
   transform: scale(1) translateY(0);
 }
 
+/* Cathedral frame inner detailing */
+.lightbox-frame-deco {
+  position: absolute;
+  inset: 8px;
+  border: 1px solid rgba(201,168,76,0.08);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.lf-top-left, .lf-top-right, .lf-bottom-left, .lf-bottom-right {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  border: 1px solid rgba(201,168,76,0.2);
+}
+
+.lf-top-left     { top: -2px; left: -2px; border-right: none; border-bottom: none; }
+.lf-top-right    { top: -2px; right: -2px; border-left: none; border-bottom: none; }
+.lf-bottom-left  { bottom: -2px; left: -2px; border-right: none; border-top: none; }
+.lf-bottom-right { bottom: -2px; right: -2px; border-left: none; border-top: none; }
+
+/* Bleeding accent underneath player */
+.lightbox-blood-drip {
+  position: absolute;
+  bottom: 0;
+  left: 10%;
+  right: 10%;
+  height: 2px;
+  background: linear-gradient(to right, transparent, var(--blood), transparent);
+  box-shadow: 0 0 10px var(--crimson);
+  opacity: 0.5;
+}
+
+/* Title header */
+.lightbox-title-container {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 1.2rem;
+}
+
+.lb-ornament {
+  color: var(--gold);
+  font-size: 1rem;
+  opacity: 0.4;
+}
+
 .lightbox-title {
   font-family: var(--font-caps);
-  font-size: 0.75rem;
-  color: var(--gold);
+  font-size: 0.85rem;
+  color: var(--bone);
   letter-spacing: 0.35em;
   text-transform: uppercase;
-  margin-bottom: 1rem;
   text-align: center;
-  opacity: 0.7;
+  text-shadow: 0 0 10px rgba(255,255,255,0.1);
 }
 
+/* Video wrapper */
 .lightbox-video-wrapper {
   position: relative;
-  border: 1px solid rgba(139,0,0,0.3);
-  box-shadow:
-    0 0 0 1px rgba(201,168,76,0.08),
-    0 40px 100px rgba(0,0,0,0.9),
-    0 0 80px rgba(139,0,0,0.1);
-}
-
-.lightbox-video-wrapper::before,
-.lightbox-video-wrapper::after {
-  content: '';
-  position: absolute;
-  width: 24px;
-  height: 24px;
   z-index: 2;
+  border: 1px solid rgba(139,0,0,0.5);
+  background: var(--black);
+  aspect-ratio: 16/9;
+  overflow: hidden;
+  box-shadow: inset 0 0 40px rgba(0,0,0,0.8);
 }
 
 .lightbox-video-wrapper::before {
-  top: -1px; left: -1px;
-  border-top: 1px solid var(--gold);
-  border-left: 1px solid var(--gold);
-  opacity: 0.4;
-}
-
-.lightbox-video-wrapper::after {
-  bottom: -1px; right: -1px;
-  border-bottom: 1px solid var(--gold);
-  border-right: 1px solid var(--gold);
-  opacity: 0.4;
+  content: '';
+  position: absolute;
+  inset: 0;
+  box-shadow: inset 0 0 120px rgba(0,0,0,1);
+  pointer-events: none;
+  z-index: 10;
 }
 
 .lightbox-container video {
   width: 100%;
+  height: 100%;
+  object-fit: contain;
   display: block;
   background: #000;
+  position: relative;
+  z-index: 5;
 }
 
+/* Error message overhaul */
+.video-error-msg {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(circle at center, rgba(30,0,10,0.95), #000);
+  color: var(--mist);
+  font-family: var(--font-serif);
+  gap: 1rem;
+  z-index: 15;
+  text-align: center;
+}
+
+.video-error-msg[hidden] {
+  display: none !important;
+}
+
+.error-icon {
+  width: 40px;
+  height: 40px;
+  border: 1px solid var(--crimson);
+  border-radius: 50%;
+  position: relative;
+  animation: pulseError 2s infinite alternate;
+}
+
+.error-icon::after {
+  content: '⛌';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: var(--crimson);
+  font-size: 1.5rem;
+}
+
+@keyframes pulseError {
+  from { box-shadow: 0 0 10px rgba(139,0,0,0); }
+  to   { box-shadow: 0 0 20px rgba(139,0,0,0.5); }
+}
+
+.video-error-msg p {
+  font-style: italic;
+  font-size: 1.1rem;
+  color: var(--mist);
+  opacity: 0.9;
+  line-height: 1.5;
+}
+
+.video-error-msg small {
+  font-family: var(--font-sans);
+  font-size: 0.75rem;
+  font-style: normal;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--crimson);
+  opacity: 0.7;
+}
+
+/* Close button */
 .lightbox-close {
   position: absolute;
-  top: -50px;
+  top: -45px;
   right: 0;
-  background: rgba(10,0,7,0.6);
-  border: 1px solid rgba(139,0,0,0.3);
+  background: linear-gradient(135deg, rgba(30,0,15,0.8), rgba(10,0,5,0.9));
+  border: 1px solid rgba(139,0,0,0.4);
   color: var(--mist);
-  width: 38px;
-  height: 38px;
+  width: 44px;
+  height: 44px;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.3s ease;
+  transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
   border-radius: 50%;
   backdrop-filter: blur(4px);
+  z-index: 10;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+}
+
+.lightbox-close:hover {
+  background: var(--crimson);
+  border-color: var(--blood);
+  color: #fff;
+  transform: rotate(90deg) scale(1.1);
+  box-shadow: 0 0 20px rgba(139,0,0,0.6);
 }
 
 .lightbox-close svg {
@@ -1557,8 +2022,11 @@ body {
 
   .hero-content { padding-bottom: 14rem; }
 
-  .fog-container { opacity: 0.2; }
+  .fog-container { opacity: 0.3; }
   .blood-drip-top { display: none; }
+  .buttresses { display: none; }
+  .cathedral-ceiling { height: 100px; }
+  .whisper-text { display: none; }
 }
 
 @media (max-width: 480px) {
@@ -1569,6 +2037,10 @@ body {
   .candelabra-center { transform: scale(0.65); }
   .rose-window { display: none; }
   #smokeCanvas { display: none; }
+  .texture-overlay { display: none; }
+  .vignette-overlay { opacity: 0.7; }
+  .floating-orbs { display: none; }
+  .title-name::before { display: none; }
 }
 
 /* ============================================================

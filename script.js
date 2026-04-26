@@ -6,17 +6,11 @@
 'use strict';
 
 // ============================================================
-// CONFIG
+// 1. DYNAMIC VIDEO DISCOVERY
 // ============================================================
 const VIDEO_DIR = 'vidéo';
 
-// Supported video extensions
-const VIDEO_EXTENSIONS = [
-  'mp4', 'webm', 'ogg', 'ogv', 'mov', 'avi', 'mkv',
-  'm4v', '3gp', 'flv', 'wmv', 'ts', 'mts'
-];
-
-// Gothic descriptions for cards
+// Gothic descriptions for cards (shared across all video indices)
 const GOTHIC_DESCRIPTIONS = [
   { title: "Un message du fond du cœur",         desc: "Un être cher traverse les ténèbres pour toi…" },
   { title: "Mots gravés dans l'ombre",            desc: "Des souvenirs que le temps n'efface pas." },
@@ -40,118 +34,129 @@ const GOTHIC_DESCRIPTIONS = [
   { title: "L'appel du crépuscule",                desc: "Le soir murmure ton nom." },
 ];
 
-// ============================================================
-// 1. DYNAMIC VIDEO DISCOVERY
-// ============================================================
-async function discoverVideos() {
-  const videos = [];
+// Supported video extensions (for directory listing fallback)
+const VIDEO_EXTENSIONS = ['mp4', 'webm', 'ogg', 'ogv', 'mov', 'avi', 'mkv', 'm4v', '3gp', 'flv', 'wmv', 'ts', 'mts'];
 
-  // Strategy 1: Try to fetch a directory listing (works when served by a file server)
-  try {
-    const response = await fetch(VIDEO_DIR + '/');
-    if (response.ok) {
-      const text = await response.text();
-      // Parse HTML directory listing
-      const parser = new DOMParser();
-      const doc = parser.parseFromString(text, 'text/html');
-      const links = doc.querySelectorAll('a[href]');
-
-      links.forEach(link => {
-        const href = decodeURIComponent(link.getAttribute('href'));
-        const ext = href.split('.').pop().toLowerCase();
-        if (VIDEO_EXTENSIONS.includes(ext)) {
-          // Clean up the href - remove any leading path prefixes
-          const filename = href.split('/').pop();
-          videos.push({
-            src: VIDEO_DIR + '/' + filename,
-            filename: filename,
-          });
-        }
-      });
-
-      if (videos.length > 0) return videos;
-    }
-  } catch (e) {
-    // Directory listing not available — fall through to Strategy 2
-  }
-
-  // Strategy 2: Probe common filenames
-  const probePrefixes = [
-    'video', 'Video', 'VIDEO',
-    'vidéo', 'Vidéo', 'VIDÉO',
-    'msg', 'message', 'Message',
-    'bday', 'birthday', 'anniv',
-    'clip', 'Clip',
-  ];
-
-  const probePromises = [];
-
-  // Probe numbered files (video1.mp4, video_1.mp4, etc.)
-  for (let i = 1; i <= 30; i++) {
-    for (const prefix of probePrefixes) {
-      for (const ext of ['mp4', 'webm', 'mov', 'ogg', 'ogv', 'm4v', 'avi', 'mkv']) {
-        // Patterns: video1, video_1, video-1, video01, video_01
-        const patterns = [
-          `${prefix}${i}`,
-          `${prefix}_${i}`,
-          `${prefix}-${i}`,
-          `${prefix}${String(i).padStart(2, '0')}`,
-          `${prefix}_${String(i).padStart(2, '0')}`,
-          `${prefix}-${String(i).padStart(2, '0')}`,
-        ];
-
-        for (const name of patterns) {
-          const path = `${VIDEO_DIR}/${name}.${ext}`;
-          probePromises.push(
-            fetch(path, { method: 'HEAD' })
-              .then(r => {
-                if (r.ok) {
-                  return { src: path, filename: `${name}.${ext}` };
-                }
-                return null;
-              })
-              .catch(() => null)
-          );
-        }
-      }
-    }
-  }
-
-  // Also probe single-name files
-  for (const ext of ['mp4', 'webm', 'mov', 'ogg', 'ogv', 'm4v', 'avi', 'mkv']) {
-    const singleNames = [
-      'intro', 'final', 'surprise', 'happy_birthday', 'joyeux_anniversaire',
-      'happy-birthday', 'joyeux-anniversaire', 'HappyBirthday', 'JoyeuxAnniversaire',
-    ];
-    for (const name of singleNames) {
-      const path = `${VIDEO_DIR}/${name}.${ext}`;
-      probePromises.push(
-        fetch(path, { method: 'HEAD' })
-          .then(r => r.ok ? { src: path, filename: `${name}.${ext}` } : null)
-          .catch(() => null)
-      );
-    }
-  }
-
-  const results = await Promise.all(probePromises);
-  const found = results.filter(Boolean);
-
-  // Deduplicate by src
-  const seen = new Set();
-  for (const v of found) {
-    if (!seen.has(v.src)) {
-      seen.add(v.src);
-      videos.push(v);
-    }
-  }
-
-  // Sort naturally by filename
-  videos.sort((a, b) => a.filename.localeCompare(b.filename, undefined, { numeric: true }));
-
-  return videos;
+// Probe a video file using <video> element (no CORS issues on file://)
+function probeVideoSrc(src) {
+  return new Promise(resolve => {
+    const v = document.createElement('video');
+    v.preload = 'metadata';
+    v.muted = true;
+    const timer = setTimeout(() => {
+      v.src = '';
+      v.load();
+      resolve(null);
+    }, 3000);
+    v.addEventListener('loadedmetadata', () => {
+      clearTimeout(timer);
+      v.src = '';
+      v.load();
+      resolve(src);
+    });
+    v.addEventListener('error', () => {
+      clearTimeout(timer);
+      v.src = '';
+      v.load();
+      resolve(null);
+    });
+    v.src = src;
+  });
 }
 
-// Assign gothic metadata to discovered videos
+// Metedata helper
+// Metadata helper
+
+function makeVideoEntry(src, filename, index) {
+  const meta = GOTHIC_DESCRIPTIONS[index % GOTHIC_DESCRIPTIONS.length];
+  return {
+    src,
+    filename,
+    label: `Âme ${String(index + 1).padStart(2, '0')}`,
+    title: meta.title,
+    desc: meta.desc,
+    readableName: filename.replace(/\.[^.]+$/, '').replace(/[_-]+/g, ' ').replace(/([a-z])([A-Z])/g, '$1 $2').trim(),
+  };
+}
+
+async function discoverVideos() {
+  // === STRATEGY 1 (http:// only): manifest.json ===
+  if (window.location.protocol !== 'file:') {
+    try {
+      const r = await fetch(`${VIDEO_DIR}/manifest.json`);
+      if (r.ok) {
+        const m = await r.json();
+        if (Array.isArray(m.videos) && m.videos.length) {
+          return m.videos.map((v, i) => makeVideoEntry(`${VIDEO_DIR}/${v.filename}`, v.filename, i));
+        }
+      }
+    } catch (_) {}
+
+    // === STRATEGY 2 (http:// only): Directory listing ===
+    try {
+      const r = await fetch(`${VIDEO_DIR}/`);
+      if (r.ok) {
+        const t = await r.text();
+        const doc = new DOMParser().parseFromString(t, 'text/html');
+        const vids = [];
+        doc.querySelectorAll('a[href]').forEach(a => {
+          const href = decodeURIComponent(a.getAttribute('href'));
+          const ext = href.split('.').pop().toLowerCase();
+          if (VIDEO_EXTENSIONS.includes(ext)) {
+            const fn = href.split('/').pop();
+            vids.push(makeVideoEntry(`${VIDEO_DIR}/${fn}`, fn, vids.length));
+          }
+        });
+        if (vids.length) return vids;
+      }
+    } catch (_) {}
+  }
+
+  // === STRATEGY 3 (all protocols): <video> element probing ===
+  const probes = [];
+  const prefixes = ['video', 'message', 'msg'];
+  const exts = ['mp4', 'webm', 'mov'];
+  const testFiles = [];
+
+  for (const prefix of prefixes) {
+    for (let i = 1; i <= 20; i++) {
+        for (const ext of exts) {
+          testFiles.push(`${prefix}_${i}.${ext}`);
+          testFiles.push(`${prefix}${i}.${ext}`);
+          testFiles.push(`${prefix}_${String(i).padStart(2, '0')}.${ext}`);
+        }
+    }
+  }
+  const singleNames = ['intro.mp4', 'surprise.mp4'];
+  testFiles.push(...singleNames);
+
+  // We only care about unique filenames, but they can be duplicates in the array above
+  const uniqueTests = [...new Set(testFiles)];
+
+  for (const fn of uniqueTests) {
+    const src = `${VIDEO_DIR}/${fn}`;
+    probes.push(
+      probeVideoSrc(src).then(found => found ? {src, filename: fn} : null)
+    );
+  }
+  const results = await Promise.all(probes);
+  const foundVids = results.filter(Boolean);
+  
+  // Deduplicate and enrich
+  const finalVids = [];
+  const seenSrc = new Set();
+  for (const v of foundVids) {
+    if (!seenSrc.has(v.src)) {
+      seenSrc.add(v.src);
+      finalVids.push(v);
+    }
+  }
+  
+  return finalVids.map((v, i) => makeVideoEntry(v.src, v.filename, i));
+}
+
+// ============================================================
+// 2. PARTICLE SYSTEM — Ashes, embers, dark petals
 function enrichVideos(videos) {
   return videos.map((v, i) => {
     const meta = GOTHIC_DESCRIPTIONS[i % GOTHIC_DESCRIPTIONS.length];
@@ -188,10 +193,10 @@ function enrichVideos(videos) {
     H = canvas.height = window.innerHeight;
   });
 
-  const PARTICLE_COUNT = 70;
+  const PARTICLE_COUNT = 100;
   const particles = [];
 
-  const SHAPES = ['ash', 'ember', 'petal', 'spark', 'rune'];
+  const SHAPES = ['ash', 'ember', 'petal', 'spark', 'rune', 'rosePetal'];
 
   function rand(min, max) { return Math.random() * (max - min) + min; }
 
@@ -211,6 +216,7 @@ function enrichVideos(videos) {
       hue:   shape === 'ember' ? `hsl(${rand(0, 25)}, 100%, ${rand(40, 60)}%)`
            : shape === 'spark' ? '#c9a84c'
            : shape === 'petal' ? `hsl(${rand(340, 360)}, ${rand(60,100)}%, ${rand(10,25)}%)`
+           : shape === 'rosePetal' ? `hsl(${rand(350, 370)}, ${rand(70,100)}%, ${rand(5,15)}%)`
            : shape === 'rune'  ? 'rgba(139,0,0,0.3)'
            : `hsl(0, 0%, ${rand(25, 45)}%)`,
     };
@@ -247,18 +253,33 @@ function enrichVideos(videos) {
       ctx.beginPath();
       ctx.moveTo(0, -p.size);
       ctx.bezierCurveTo(p.size, -p.size * 0.5, p.size * 0.8, p.size * 0.5, 0, p.size);
-      ctx.bezierCurveTo(-p.size * 0.8, p.size * 0.5, -p.size, -p.size * 0.5, 0, -p.size);
+ctx.bezierCurveTo(-p.size * 0.8, p.size * 0.5, -p.size, -p.size * 0.5, 0, -p.size);
       ctx.fill();
     } else if (p.shape === 'rune') {
       ctx.strokeStyle = p.hue;
       ctx.lineWidth = 0.5;
       ctx.beginPath();
-      // Simple gothic cross shape
       ctx.moveTo(0, -p.size);
       ctx.lineTo(0, p.size);
       ctx.moveTo(-p.size * 0.5, -p.size * 0.3);
       ctx.lineTo(p.size * 0.5, -p.size * 0.3);
       ctx.stroke();
+    } else if (p.shape === 'rosePetal') {
+      ctx.save();
+      ctx.globalAlpha = p.alpha * p.life * 0.8;
+      ctx.fillStyle = p.hue;
+      ctx.beginPath();
+      ctx.moveTo(0, -p.size * 1.5);
+      ctx.bezierCurveTo(p.size * 0.8, -p.size, p.size, p.size * 0.5, 0, p.size * 1.2);
+      ctx.bezierCurveTo(-p.size, p.size * 0.5, -p.size * 0.8, -p.size, 0, -p.size * 1.5);
+      ctx.fill();
+      ctx.strokeStyle = 'rgba(80,0,20,0.2)';
+      ctx.lineWidth = 0.3;
+      ctx.beginPath();
+      ctx.moveTo(0, -p.size);
+      ctx.lineTo(0, p.size * 0.8);
+      ctx.stroke();
+      ctx.restore();
     } else {
       // spark
       const grad = ctx.createRadialGradient(0, 0, 0, 0, 0, p.size * 2);
@@ -279,8 +300,16 @@ function enrichVideos(videos) {
     for (const p of particles) {
       // Sinusoidal drift
       p.x     += p.vx + Math.sin(time + p.y * 0.008) * 0.25;
-      p.y     += p.vy;
-      p.angle += p.spin;
+      
+      // Rose petals drift more slowly and sway more
+      if (p.shape === 'rosePetal') {
+        p.x     += Math.sin(time * 0.5 + p.y * 0.003) * 0.5;
+        p.y     += p.vy * 0.6; // slower fall
+        p.angle += p.spin * 0.3; // gentler rotation
+      } else {
+        p.y     += p.vy;
+        p.angle += p.spin;
+      }
 
       // Embers flicker
       if (p.shape === 'ember') {
@@ -498,7 +527,7 @@ function enrichVideos(videos) {
 
   try {
     const discovered = await discoverVideos();
-    videos = enrichVideos(discovered);
+    videos = discovered;
   } catch (e) {
     console.warn('Video discovery failed:', e);
     videos = [];
@@ -535,6 +564,7 @@ function enrichVideos(videos) {
       <div class="card-blood-line"></div>
       <div class="video-thumb">
         <div class="thumb-deco"></div>
+        <div class="thumb-gothic-pattern"></div>
         <div class="video-thumb-overlay"></div>
         <span class="video-number">${v.label}</span>
         <div class="play-btn" aria-hidden="true">
@@ -583,23 +613,68 @@ const lightboxVideo = document.getElementById('lightboxVideo');
 const lightboxTitle = document.getElementById('lightboxTitle');
 const lightboxClose = document.getElementById('lightboxClose');
 const lightboxOvly  = document.getElementById('lightboxOverlay');
+const videoErrorMsg = document.getElementById('videoErrorMsg');
+
+let videoLoadingTimeout = null;
+let videoIsReady = false;
 
 function openVideo(src, title) {
   if (!lightbox || !lightboxVideo) return;
   lightboxTitle.textContent = title;
-  lightboxVideo.src = src;
+  
+  if (videoErrorMsg) videoErrorMsg.style.display = 'none';
+  if (videoLoadingTimeout) clearTimeout(videoLoadingTimeout);
+  videoIsReady = false;
+  
   lightbox.classList.add('open');
   document.body.style.overflow = 'hidden';
-  lightboxVideo.play().catch(() => { /* autoplay blocked */ });
-  lightboxClose?.focus();
+  
+  lightboxVideo.src = src;
+  lightboxVideo.load();
+  
+  // Start our timeout exactly when we command the video to open
+  videoLoadingTimeout = setTimeout(() => {
+    if (!videoIsReady && videoErrorMsg) videoErrorMsg.style.display = 'flex';
+  }, 5000);
+  
+  // Try playing immediately (required by some browsers to start buffer)
+  const playPromise = lightboxVideo.play();
+  if (playPromise !== undefined) {
+    playPromise.catch(e => {
+      // Autoplay might be blocked, but the loading continues
+      console.warn('Autoplay prevented:', e);
+    });
+  }
 }
+
+lightboxVideo?.addEventListener('playing', () => {
+  videoIsReady = true;
+  if (videoLoadingTimeout) { clearTimeout(videoLoadingTimeout); videoLoadingTimeout = null; }
+  if (videoErrorMsg) videoErrorMsg.style.display = 'none';
+});
+
+lightboxVideo?.addEventListener('canplay', () => {
+  videoIsReady = true;
+  if (videoLoadingTimeout) { clearTimeout(videoLoadingTimeout); videoLoadingTimeout = null; }
+  if (videoErrorMsg) videoErrorMsg.style.display = 'none';
+});
+
+lightboxVideo?.addEventListener('error', () => {
+  if (lightbox?.classList.contains('open')) {
+    if (videoLoadingTimeout) { clearTimeout(videoLoadingTimeout); videoLoadingTimeout = null; }
+    if (videoErrorMsg) videoErrorMsg.style.display = 'flex';
+  }
+});
 
 function closeLightbox() {
   if (!lightbox) return;
   lightbox.classList.remove('open');
+  if (videoLoadingTimeout) { clearTimeout(videoLoadingTimeout); videoLoadingTimeout = null; }
+  videoIsReady = false;
   lightboxVideo.pause();
   lightboxVideo.removeAttribute('src');
-  lightboxVideo.load(); // Reset
+  lightboxVideo.load();
+  if (videoErrorMsg) videoErrorMsg.style.display = 'none';
   document.body.style.overflow = '';
 }
 
@@ -618,6 +693,52 @@ window.addEventListener('load', () => {
     setTimeout(() => el.classList.add('visible'), 500 + i * 250);
   });
 });
+
+const WHISPER_TEXTS = [
+  "Au milieu des ténèbres, une lumière naît…",
+  "Les ombres murmurent ton nom ce soir",
+  "Tu es la rose qui fleurit dans l'abîme",
+  "Que la nuit soit douce sur ta peau",
+  "Les étoiles dansent pour ton arrivée",
+  "Chaque instant est une offrande d'amour",
+  "Les cierges brûlent en ton nom",
+  "Tu illumines les ténèbres de ta présence",
+  "Que ce jour soit béni par les anciennes lumières"
+];
+
+let whisperIndex = 0;
+const whisperEl = document.getElementById('whisperText');
+
+function updateWhisper() {
+  if (whisperEl) {
+    whisperEl.textContent = WHISPER_TEXTS[whisperIndex];
+    whisperEl.style.top = `calc(50% + ${Math.sin(Date.now() * 0.0005) * 10}px)`;
+    whisperIndex = (whisperIndex + 1) % WHISPER_TEXTS.length;
+  }
+}
+
+setInterval(updateWhisper, 10000);
+updateWhisper();
+
+// Floating orbs
+function createOrb() {
+  const orb = document.createElement('div');
+  orb.className = 'orb';
+  const size = Math.random() * 60 + 20;
+  orb.style.width = size + 'px';
+  orb.style.height = size + 'px';
+  orb.style.left = Math.random() * 100 + '%';
+  orb.style.animationDuration = (Math.random() * 15 + 20) + 's';
+  orb.style.animationDelay = (Math.random() * 5) + 's';
+  return orb;
+}
+
+const orbsContainer = document.getElementById('floatingOrbs');
+if (orbsContainer) {
+  for (let i = 0; i < 8; i++) {
+    orbsContainer.appendChild(createOrb());
+  }
+}
 
 // ============================================================
 // 8. SMOOTH SCROLL WITH EASING

@@ -8,9 +8,16 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=UnifrakturMaguntia&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Cinzel+Decorative:wght@400;700;900&family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet" />
+  <link rel="icon" type="image/x-icon" href="favicon.ico" />
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
+
+  <!-- Texture grain overlay -->
+  <div class="texture-overlay" aria-hidden="true"></div>
+
+  <!-- Vignette frame -->
+  <div class="vignette-overlay" aria-hidden="true"></div>
 
   <!-- Fog overlay -->
   <div class="fog-container" aria-hidden="true">
@@ -62,13 +69,73 @@
       </div>
     </div>
 
-    <!-- Stained Glass Rose Window -->
+    <!-- Gothic ceiling arches at top -->
+    <div class="cathedral-ceiling" aria-hidden="true">
+      <svg viewBox="0 0 1400 180" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="archGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#0a0007" stop-opacity="0.9"/>
+            <stop offset="100%" stop-color="transparent" stop-opacity="0"/>
+          </linearGradient>
+        </defs>
+        <!-- Repeating pointed arches -->
+        <g opacity="0.4">
+          <path d="M0,180 L0,40 Q50,0 100,40 L100,180" fill="none" stroke="rgba(139,0,0,0.08)" stroke-width="0.8"/>
+          <path d="M100,180 L100,30 Q150,-10 200,30 L200,180" fill="none" stroke="rgba(139,0,0,0.06)" stroke-width="0.6"/>
+          <path d="M200,180 L200,45 Q250,5 300,45 L300,180" fill="none" stroke="rgba(139,0,0,0.07)" stroke-width="0.7"/>
+          <path d="M300,180 L300,25 Q350,-15 400,25 L400,180" fill="none" stroke="rgba(139,0,0,0.05)" stroke-width="0.5"/>
+          <path d="M400,180 L400,35 Q450,-5 500,35 L500,180" fill="none" stroke="rgba(139,0,0,0.08)" stroke-width="0.6"/>
+          <path d="M500,180 L500,20 Q550,-20 600,20 L600,180" fill="none" stroke="rgba(139,0,0,0.06)" stroke-width="0.5"/>
+          <path d="M600,180 L600,40 Q650,0 700,40 L700,180" fill="none" stroke="rgba(139,0,0,0.07)" stroke-width="0.7"/>
+          <path d="M700,180 L700,30 Q750,-10 800,30 L800,180" fill="none" stroke="rgba(139,0,0,0.05)" stroke-width="0.6"/>
+          <path d="M800,180 L800,45 Q850,5 900,45 L900,180" fill="none" stroke="rgba(139,0,0,0.08)" stroke-width="0.5"/>
+          <path d="M900,180 L900,25 Q950,-15 1000,25 L1000,180" fill="none" stroke="rgba(139,0,0,0.06)" stroke-width="0.7"/>
+          <path d="M1000,180 L1000,35 Q1050,-5 1100,35 L1100,180" fill="none" stroke="rgba(139,0,0,0.07)" stroke-width="0.5"/>
+          <path d="M1100,180 L1100,20 Q1150,-20 1200,20 L1200,180" fill="none" stroke="rgba(139,0,0,0.08)" stroke-width="0.6"/>
+          <path d="M1200,180 L1200,40 Q1250,0 1300,40 L1300,180" fill="none" stroke="rgba(139,0,0,0.05)" stroke-width="0.5"/>
+          <path d="M1300,180 L1300,30 Q1350,-10 1400,30 L1400,180" fill="none" stroke="rgba(139,0,0,0.07)" stroke-width="0.6"/>
+        </g>
+        <!-- Subtle gold tracery lines -->
+        <g opacity="0.15">
+          <line x1="0" y1="100" x2="1400" y2="100" stroke="rgba(201,168,76,0.03)" stroke-width="0.3"/>
+          <line x1="0" y1="130" x2="1400" y2="130" stroke="rgba(201,168,76,0.02)" stroke-width="0.2"/>
+        </g>
+      </svg>
+    </div>
+
+    <!-- Flying buttresses silhouettes -->
+    <div class="buttresses" aria-hidden="true">
+      <svg class="buttress-left" viewBox="0 0 200 500" xmlns="http://www.w3.org/2000/svg">
+        <path d="M180,500 Q200,300 160,150 Q140,80 120,50 M160,150 L200,120 M120,120 L60,80" 
+              fill="none" stroke="rgba(10,0,7,0.6)" stroke-width="40" stroke-linecap="round"/>
+        <path d="M175,480 Q195,290 155,145 Q135,75 115,45 M155,145 L195,115 M115,115 L55,75" 
+              fill="none" stroke="rgba(139,0,0,0.03)" stroke-width="15" stroke-linecap="round"/>
+      </svg>
+      <svg class="buttress-right" viewBox="0 0 200 500" xmlns="http://www.w3.org/2000/svg">
+        <path d="M20,500 Q0,300 40,150 Q60,80 80,50 M40,150 L0,120 M80,120 L140,80" 
+              fill="none" stroke="rgba(10,0,7,0.6)" stroke-width="40" stroke-linecap="round"/>
+        <path d="M25,480 Q5,290 45,145 Q65,75 85,45 M45,145 L5,115 M85,115 L145,75" 
+              fill="none" stroke="rgba(139,0,0,0.03)" stroke-width="15" stroke-linecap="round"/>
+      </svg>
+    </div>
+
+    <!-- Enhanced Rose Window with Divine Rays -->
     <div class="rose-window" aria-hidden="true">
+      <div class="rose-window-rays">
+        <div class="ray ray-1"></div>
+        <div class="ray ray-2"></div>
+        <div class="ray ray-3"></div>
+        <div class="ray ray-4"></div>
+        <div class="ray ray-5"></div>
+        <div class="ray ray-6"></div>
+        <div class="ray ray-7"></div>
+        <div class="ray ray-8"></div>
+      </div>
       <svg viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg" class="rose-window-svg">
         <defs>
           <radialGradient id="rwGlow" cx="50%" cy="50%" r="50%">
-            <stop offset="0%" stop-color="#ff0040" stop-opacity="0.15"/>
-            <stop offset="40%" stop-color="#8b0000" stop-opacity="0.08"/>
+            <stop offset="0%" stop-color="#ff0040" stop-opacity="0.25"/>
+            <stop offset="40%" stop-color="#8b0000" stop-opacity="0.15"/>
             <stop offset="100%" stop-color="transparent" stop-opacity="0"/>
           </radialGradient>
           <filter id="roseBlur">
@@ -76,12 +143,14 @@
           </filter>
         </defs>
         <circle cx="150" cy="150" r="140" fill="url(#rwGlow)" filter="url(#roseBlur)"/>
-        <circle cx="150" cy="150" r="130" fill="none" stroke="rgba(139,0,0,0.15)" stroke-width="1"/>
-        <circle cx="150" cy="150" r="90" fill="none" stroke="rgba(139,0,0,0.1)" stroke-width="0.5"/>
-        <circle cx="150" cy="150" r="50" fill="none" stroke="rgba(201,168,76,0.08)" stroke-width="0.5"/>
-        <circle cx="150" cy="150" r="20" fill="none" stroke="rgba(201,168,76,0.12)" stroke-width="0.8"/>
+        <circle cx="150" cy="150" r="130" fill="none" stroke="rgba(139,0,0,0.2)" stroke-width="1"/>
+        <circle cx="150" cy="150" r="90" fill="none" stroke="rgba(139,0,0,0.12)" stroke-width="0.5"/>
+        <circle cx="150" cy="150" r="50" fill="none" stroke="rgba(201,168,76,0.1)" stroke-width="0.5"/>
+        <circle cx="150" cy="150" r="20" fill="none" stroke="rgba(201,168,76,0.18)" stroke-width="0.8"/>
+        <!-- Inner core glow -->
+        <circle cx="150" cy="150" r="8" fill="rgba(255,0,64,0.15)"/>
         <!-- Radial spokes -->
-        <g stroke="rgba(139,0,0,0.07)" stroke-width="0.5">
+        <g stroke="rgba(139,0,0,0.1)" stroke-width="0.5">
           <line x1="150" y1="20" x2="150" y2="280"/>
           <line x1="20" y1="150" x2="280" y2="150"/>
           <line x1="57" y1="57" x2="243" y2="243"/>
@@ -96,7 +165,7 @@
           <line x1="57" y1="57" x2="150" y2="20" opacity="0.5"/>
         </g>
         <!-- Petal shapes in the rose window -->
-        <g fill="none" stroke="rgba(139,0,0,0.08)" stroke-width="0.5">
+        <g fill="none" stroke="rgba(139,0,0,0.1)" stroke-width="0.5">
           <ellipse cx="150" cy="80" rx="12" ry="25" transform="rotate(0,150,150)"/>
           <ellipse cx="150" cy="80" rx="12" ry="25" transform="rotate(45,150,150)"/>
           <ellipse cx="150" cy="80" rx="12" ry="25" transform="rotate(90,150,150)"/>
@@ -106,6 +175,9 @@
           <ellipse cx="150" cy="80" rx="12" ry="25" transform="rotate(270,150,150)"/>
           <ellipse cx="150" cy="80" rx="12" ry="25" transform="rotate(315,150,150)"/>
         </g>
+        <!-- Additional decorative circles -->
+        <circle cx="150" cy="150" r="65" fill="none" stroke="rgba(201,168,76,0.05)" stroke-width="0.3"/>
+        <circle cx="150" cy="150" r="110" fill="none" stroke="rgba(139,0,0,0.06)" stroke-width="0.3"/>
       </svg>
     </div>
 
@@ -299,9 +371,8 @@
 
       <p class="hero-sub reveal">En ce jour maudit de ta naissance</p>
       <h1 class="hero-title reveal">
-        <span class="title-line">Joyeux</span>
+        <span class="title-line">Joyeux Anniversaire</span>
         <span class="title-name" data-text="Angélique">Angélique</span>
-        <span class="title-line">Anniversaire</span>
       </h1>
 
       <div class="gothic-divider reveal" aria-hidden="true">
@@ -340,6 +411,12 @@
     </div>
   </section>
 
+  <!-- Floating orbs -->
+  <div class="floating-orbs" aria-hidden="true" id="floatingOrbs"></div>
+
+  <!-- Whisper text poetic phrases -->
+  <div class="whisper-text" id="whisperText" aria-hidden="true"></div>
+
   <!-- ===== TRANSITION DIVIDER ===== -->
   <div class="section-divider">
     <svg viewBox="0 0 1200 120" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
@@ -374,17 +451,34 @@
   <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Lecture vidéo">
     <div class="lightbox-overlay" id="lightboxOverlay"></div>
     <div class="lightbox-container">
+      <!-- Decorative gothic frame -->
+      <div class="lightbox-frame-deco" aria-hidden="true">
+        <div class="lf-top-left"></div>
+        <div class="lf-top-right"></div>
+        <div class="lf-bottom-left"></div>
+        <div class="lf-bottom-right"></div>
+        <div class="lf-arch"></div>
+      </div>
       <button class="lightbox-close" id="lightboxClose" aria-label="Fermer">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
           <path d="M18 6L6 18M6 6l12 12"/>
         </svg>
       </button>
-      <div class="lightbox-title" id="lightboxTitle"></div>
+      <div class="lightbox-title-container">
+        <span class="lb-ornament">⸸</span>
+        <div class="lightbox-title" id="lightboxTitle"></div>
+        <span class="lb-ornament">⸸</span>
+      </div>
       <div class="lightbox-video-wrapper">
         <video id="lightboxVideo" controls playsinline>
           Votre navigateur ne supporte pas la vidéo HTML5.
         </video>
+        <div class="video-error-msg" id="videoErrorMsg" hidden>
+          <div class="error-icon"></div>
+          <p>L'âme refuse de se révéler…<br><small>La vidéo n'a pu être chargée.</small></p>
+        </div>
       </div>
+      <div class="lightbox-blood-drip"></div>
     </div>
   </div>
 
