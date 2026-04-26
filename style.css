@@ -1062,12 +1062,12 @@ body {
 
 .hero-sub {
   font-family: var(--font-caps);
-  font-size: 0.7rem;
-  letter-spacing: 0.4em;
+  font-size: 0.95rem; /* Increased for readability */
+  letter-spacing: 0.3em; /* Slightly less massive spacing for bigger font */
   text-transform: uppercase;
   color: var(--mist);
   margin-bottom: 1.5rem;
-  opacity: 0.8;
+  opacity: 0.9;
 }
 
 .hero-title {
@@ -1081,13 +1081,13 @@ body {
 
 .title-line {
   font-family: var(--font-caps);
-  font-size: clamp(1rem, 2.5vw, 1.5rem);
-  color: #c9a84c; /* aged gold */
-  letter-spacing: 0.8em; /* Cinematic tracking */
-  margin-left: 0.8em; /* offset centering for tracking */
+  font-size: clamp(1.4rem, 4vw, 2.4rem); /* Increased size heavily */
+  color: #d8bc88; /* Slightly brighter old gold for legibility */
+  letter-spacing: 0.6em; /* Slightly tighter relative spacing for readibility */
+  margin-left: 0.6em; /* offset centering for tracking */
   text-transform: uppercase;
   font-weight: 300;
-  opacity: 0.9;
+  opacity: 0.95;
   text-shadow: 
     0 4px 20px rgba(139,0,0,0.6),
     0 0 40px rgba(0,0,0,0.9);
@@ -1183,13 +1183,13 @@ body {
 
 .hero-quote {
   font-family: var(--font-serif);
-  font-size: 1.15rem;
+  font-size: 1.35rem; /* Increased size significantly */
   font-weight: 300;
   color: var(--mist);
-  margin-bottom: 3rem;
+  margin-bottom: 3.5rem;
   font-style: italic;
   letter-spacing: 0.05em;
-  opacity: 0.85;
+  opacity: 0.9;
 }
 
 /* ---------- SCROLL CTA ---------- */
@@ -1201,10 +1201,10 @@ body {
   text-decoration: none;
   color: var(--gold);
   font-family: var(--font-caps);
-  font-size: 0.6rem;
+  font-size: 0.8rem; /* Increased size greatly */
   letter-spacing: 0.35em;
   text-transform: uppercase;
-  opacity: 0.6;
+  opacity: 0.8; /* Increased opacity for legibility */
   transition: all var(--transition);
   animation: floatCTA 3s ease-in-out infinite;
 }
@@ -2017,6 +2017,11 @@ body {
 
   .section-title { font-size: 2.5rem; }
 
+  /* Hero typography scaling */
+  .hero-sub { font-size: 0.85rem; letter-spacing: 0.3em; }
+  .title-line { font-size: 1.2rem; letter-spacing: 0.5em; margin-left: 0.5em; }
+  .title-name { font-size: 6rem; }
+
   .lightbox-container { width: 96vw; }
   .lightbox-close { top: -44px; }
 
@@ -2041,6 +2046,12 @@ body {
   .vignette-overlay { opacity: 0.7; }
   .floating-orbs { display: none; }
   .title-name::before { display: none; }
+
+  /* Aggressive mobile text scaling */
+  .hero-sub { font-size: 0.8rem; letter-spacing: 0.2rem; margin-bottom: 1rem; }
+  .title-line { font-size: 1rem; letter-spacing: 0.25em; margin-left: 0.25em; }
+  .title-line::before, .title-line::after { width: 25px; } /* shorter bleed lines */
+  .title-name { font-size: 4.2rem; filter: drop-shadow(0 5px 8px rgba(0,0,0,0.9)); }
 }
 
 /* ============================================================
